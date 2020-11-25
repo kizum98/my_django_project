@@ -1,0 +1,25 @@
+{% extends "main_page.html" %}
+
+{% block title %}
+Список статей
+{% endblock %}
+
+{% block content %}
+
+<h2>Список сообщений</h2>
+
+<hr>
+
+{% for article in articles_qs %}
+    <h2>Автор : {{article.user_name}} </h2>
+    <i>Дата публикации : {{article.date_send}}</i>
+    <a href="{% url 'articles:article_view' article.id%}"><h4>{{article.title}}</h4> </a>
+{% endfor %}
+
+<hr>
+
+<form action = "">
+    <input type="button" value="Добавить сообщение" onclick = "go_to_url('{% url 'articles:article_create' %}')">
+</form>
+
+{% endblock %}

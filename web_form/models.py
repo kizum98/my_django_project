@@ -7,5 +7,7 @@ class Article(models.Model):
     text = models.TextField(verbose_name='Текст')
     date_send = models.DateField(auto_now=True)
 
+    text_answer = models.TextField(verbose_name='Текст ответа')
+
     def __str__(self):
         return self.title

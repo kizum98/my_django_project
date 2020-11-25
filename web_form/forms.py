@@ -5,8 +5,9 @@ from .models import Article
 
 
 class ArticleForm(forms.ModelForm):
-    captcha = CaptchaField(label='Докажи что не робот ')
+    captcha = CaptchaField(label='Докажи что не робо ')
 
     class Meta:
         model = Article
         fields = '__all__'
+

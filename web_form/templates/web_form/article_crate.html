@@ -1,9 +1,14 @@
 {% extends "main_page.html" %}
 
+{% block title %}
+Создание статьи
+{% endblock %}
+
 {% block content %}
 
 <form method="post">
     {% csrf_token %}
+
     <h3>{{form.title.label}}</h3>
     <h5>{{form.title}}</h5>
     <h3>{{form.user_name.label}}</h3>
@@ -13,15 +18,18 @@
     <hr>
     {{form.captcha}}
     <br>
+
     <input type="submit" value="Отправить сообщение">
     {% if reset %}
         <br>
         <b>Ошибка ввода капчи, вы робот!</b>
     {% endif %}
+
 </form>
 <hr>
-<form action = "{% url 'forms:list_articles_view' %}">
-    <input type="submit" value="На главную">
+
+<form action = "">
+    <input type="button" value="На главную" onclick = "go_to_url('{% url 'articles:list_articles_view' %}')">
 </form>
 
 {% endblock %}

@@ -1,0 +1,32 @@
+{% extends "main_page.html" %}
+
+{% block title %}
+{{article.title}}
+{% endblock %}
+
+{% block content %}
+
+<h3>{{article.title}}</h3>
+<hr>
+<h5>{{article.user_name}}</h5>
+<h5>{{article.date_send}}</h5>
+<br>
+{{article.text}}
+<hr>
+
+<form method="post">
+    {% csrf_token %}
+    <h5>Добавить ответ</h5>
+    <input type="text" name="text_answer" value="{{article.text_answer}} ">
+    <br>
+    <input type="submit" value="Добавить">
+    <hr>
+</form>
+
+<form action = "">
+    <input type="button" value="На главную" onclick = "go_to_url('{% url 'articles:list_articles_view' %}')">
+    <input type="button" value="Редактировать" onclick = "go_to_url('{% url 'articles:article_modify' article.id %}')">
+</form>
+
+
+{% endblock %}

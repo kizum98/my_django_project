@@ -7,7 +7,7 @@ from .models import Article
 
 def list_articles_view(request):
     articles_qs = Article.objects.all()
-    return render(request, 'web_form/list.html', {'list': articles_qs})
+    return render(request, 'web_form/articles_list.html', {'articles_qs': articles_qs})
 
 
 def article_create(request):
@@ -16,11 +16,11 @@ def article_create(request):
 
     if request.method == "POST":
         if form.is_valid():
-            #form.save()
+            form.save()
             return HttpResponse(f"Сообщение {form['user_name'].value()} отправленно!")
         reset = True
 
-    return render(request, 'web_form/create.html', {'form': form, 'reset': reset})
+    return render(request, 'web_form/article_crate.html', {'form': form, 'reset': reset})
 
 
 def article_view(request, article_id):
@@ -29,4 +29,18 @@ def article_view(request, article_id):
     except Article.DoesNotExist:
         raise Http404("Статья не найденна!")
 
-    return render(request, 'web_form/form.html', {'form': article})
+    if request.method == "POST":
+        article.text_answer = request.POST.get("text_answer")
+        article.save()
+
+    return render(request, 'web_form/article.html', {'article': article})
+
+
+def article_modify(request, article_id):
+    try:
+        article = Article.objects.get(id=article_id)
+    except Article.DoesNotExist:
+        raise Http404("Статья не найденна!")
+
+    form = ArticleForm(instance=article)
+    return render(request, 'web_form/article_create.html', {'form': form})
