@@ -4,10 +4,17 @@ from captcha.fields import CaptchaField
 from .models import Article
 
 
-class ArticleForm(forms.ModelForm):
+class CreateArticleForm(forms.ModelForm):
     captcha = CaptchaField(label='Докажи что не робо ')
 
     class Meta:
         model = Article
-        fields = '__all__'
+        exclude = ['date_send', 'text_answer']
 
+
+class AnswerArticleForm(forms.ModelForm):
+    captcha = CaptchaField(label='Докажи что не робо ')
+
+    class Meta:
+        model = Article
+        fields = ['text_answer']

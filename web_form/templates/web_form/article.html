@@ -17,7 +17,9 @@
 <form method="post">
     {% csrf_token %}
     <h5>Добавить ответ</h5>
-    <input type="text" name="text_answer" value="{{article.text_answer}} ">
+    {{form.text_answer}}
+    <hr>
+    {{form.captcha}}
     <br>
     <input type="submit" value="Добавить">
     <hr>
