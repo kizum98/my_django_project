@@ -14,14 +14,26 @@
 {{article.text}}
 <hr>
 
-<form method="post">
+<form method="post" action="{% url 'articles:article_view' article.id %}">
     {% csrf_token %}
+    <h5>Отметить статью</h5>
+    {{form.is_show}}
     <h5>Добавить ответ</h5>
     {{form.text_answer}}
+    <br>
+    {% if article.date_answer %}
+        <br>
+        <h5>Дата ответа
+        {{article.date_answer}}</h5>
+    {% endif %}
     <hr>
     {{form.captcha}}
     <br>
     <input type="submit" value="Добавить">
+    {% if reset %}
+        <br>
+        <b>Ошибка ввода капчи, вы робот!</b>
+    {% endif %}
     <hr>
 </form>
 

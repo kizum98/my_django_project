@@ -9,7 +9,7 @@ class CreateArticleForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        exclude = ['date_send', 'text_answer']
+        fields = ['title', 'user_name', 'text']
 
 
 class AnswerArticleForm(forms.ModelForm):
@@ -17,4 +17,4 @@ class AnswerArticleForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = ['text_answer']
+        fields = ['text_answer', 'is_show']
