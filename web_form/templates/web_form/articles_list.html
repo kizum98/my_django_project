@@ -8,20 +8,31 @@
 
 
 <h2>Список статей</h2>
-<!--<br>-->
-<!--<form action = "">-->
-<!--    <input type="button" value="Отмеченные статьи" onclick = "go_to_url('{% url 'articles:list_articles_view' %}')">-->
-<!--    <input type="button" value="Не отмеченные статьи" onclick = "go_to_url('{% url 'articles:list_articles_view' %}')">-->
-<!--</form>-->
+
 <br>
 <form action = "">
     <input type="button" value="Добавить статью" onclick = "go_to_url('{% url 'articles:article_create' %}')">
 </form>
 <hr>
+<h4>
+    Страница {{ page.number }} из {{ page.paginator.num_pages }}.
+</h4>
+<h4>
+    <form action = "">
+    {% if page.has_previous %}
+        <input type="button" value="Предыдущая" onclick = "go_to_url('?page={{ page.previous_page_number }}')">
+    {% endif %}
 
-{% for article in articles_qs %}
+    {% if page.has_next %}
+        <input type="button" value="Следующая" onclick = "go_to_url('?page={{ page.next_page_number }}')">
+    {% endif %}
+    </form>
+</h4>
+<hr>
+
+{% for article in page %}
     <h4>Автор : {{article.user_name}} </h4>
-    <i>Дата публикации : {{article.date_send}}</i>
+    <i>Дата последней правки : {{article.date_send}}</i>
     <a href="{% url 'articles:article_view' article.id%}"><h2>{{article.title}}</h2> </a>
     <hr>
 {% endfor %}

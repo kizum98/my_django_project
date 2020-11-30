@@ -6,15 +6,54 @@ from django.db.models import Count, Q
 from .forms import AnswerArticleForm, CreateArticleForm
 from .models import Article
 
-# все записи за последнюю неделю
-#
-# Или найти записи, где в вопросе, ответе и имени пользователя есть слово "привет"
-#
-# Тоже самое, но поисковое слово не чувствительно к регистру
-#
-# Сколько записей is_show=True, а сколько is_show=False
-#
-# Сколько вопросов послал каждый из пользователей
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+
+class MyPaginator:
+    def __init__(self, qs, num_elements_on_page=1):
+        self.qs = qs
+        self.num_elements_on_page = num_elements_on_page
+        self.num_pages = len(qs) / num_elements_on_page
+
+    def page(self, num_page):
+
+        if num_page is int and 0 < num_page < self.num_pages + 1:
+            start = self.num_elements_on_page * (num_page - 1)
+            end = self.num_elements_on_page * num_page
+        else:
+            start = 0
+            end = self.num_elements_on_page
+            num_page = 1
+
+        p = self.Page(self.qs[start:end], num_page)
+        if start == 0:
+            p.has_previous = False
+        if end == self.num_elements_on_page * num_page:
+            p.has_next = False
+
+        return p
+
+    class Page:
+        has_previous = True
+        has_next = True
+
+        def __init__(self, qs, next_page_number):
+            self.qs = qs
+            self.it = 0
+            self.next_page_number = next_page_number
+            print(self.next_page_number)
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            if self.it < len(self.qs):
+                val = self.qs[self.it]
+                self.it += 1
+                return val
+            else:
+                raise StopIteration
+
 
 def get_article(article_id):
     try:
@@ -25,15 +64,15 @@ def get_article(article_id):
 
 def list_articles_view(request):
     # Найти все записи за последнюю неделю
-    # articles_qs = Article.objects.filter(date_send__gt=date.today() - timedelta(days=7)).order_by('date_send')
+    # articles_qs = Article.objects.filter(date_send__gt=date.today() - timedelta(days=7)).order_by('-date_send')
     #
     # Найти записи, где в вопросе, ответе и имени пользователя есть слово "Привет", с учетом регистра
     # articles_qs = Article.objects.filter(user_name__contains="Привет", text__contains="Привет",
-    #                                      text_answer__contains="Привет").order_by('date_send')
+    #                                      text_answer__contains="Привет").order_by('-date_send')
     #
     # Найти записи, где в вопросе, ответе и имени пользователя есть слово "Привет", без учета регистра
     # articles_qs = Article.objects.filter(user_name__iregex=r'Привет', text__iregex=r'Привет',
-    #                                      text_answer__iregex=r'Привет')).order_by('date_send')
+    #                                      text_answer__iregex=r'Привет')).order_by('-date_send')
     #
     # Сколько записей is_show=True
     # num_articles = Article.objects.filter(is_show=True).count()
@@ -50,16 +89,28 @@ def list_articles_view(request):
     #
     # Найти записи, где в вопросе или ответе или имени пользователя есть слово "Привет", с учетом регистра
     # articles_qs = Article.objects.filter(Q(user_name__contains="Привет") | Q(text__contains="Привет") |
-    #                                      Q(text_answer__contains="Привет")).order_by('date_send')
+    #                                      Q(text_answer__contains="Привет")).order_by('-date_send')
     #
     #
     # Найти записи, где в вопросе или ответе или имени пользователя есть слово "Привет", без учета регистра
     # articles_qs = Article.objects.filter(Q(user_name__iregex=r'Привет') | Q(text__iregex=r'Привет') |
-    #                                      Q(text_answer__iregex=r'Привет')).order_by('date_send')
+    #                                      Q(text_answer__iregex=r'Привет')).order_by('-date_send')
 
-    articles_qs = Article.objects.order_by('date_send', 'title')[:30]
-    return render(request, 'web_form/articles_list.html', {'articles_qs': articles_qs})
+    # articles_qs = Article.objects.order_by('-date_send', 'title')[:10]
+    # return render(request, 'web_form/articles_list.html', {'articles_qs': articles_qs})
 
+    articles_qs = Article.objects.order_by('-date_send', 'title')
+    paginator = MyPaginator(articles_qs, 10)
+    num_page = request.GET.get('page')
+    page = paginator.page(num_page)
+    # try:
+    #     page = paginator.page(num_page)
+    # except PageNotAnInteger:
+    #     page = paginator.page(1)
+    # except EmptyPage:
+    #     page = paginator.page(paginator.num_pages)
+
+    return render(request, 'web_form/articles_list.html', {'page': page})
 
 
 def article_create(request):
