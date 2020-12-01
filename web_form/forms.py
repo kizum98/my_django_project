@@ -18,3 +18,8 @@ class AnswerArticleForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = ['text_answer', 'is_show']
+
+
+class SearchForm(forms.Form):
+
+    cond = forms.CharField(max_length=100, initial="", required=False)

@@ -3,45 +3,45 @@ from django.http import HttpResponse, Http404
 from datetime import date, timedelta
 from django.db.models import Count, Q
 
-from .forms import AnswerArticleForm, CreateArticleForm
-from .models import Article
+import math
+import re
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .forms import AnswerArticleForm, CreateArticleForm, SearchForm
+from .models import Article
 
 
 class MyPaginator:
-    def __init__(self, qs, num_elements_on_page=1):
+    def __init__(self, qs, num_elements_per_page=1):
         self.qs = qs
-        self.num_elements_on_page = num_elements_on_page
-        self.num_pages = len(qs) / num_elements_on_page
+        self.num_elements_per_page = num_elements_per_page
+        self.num_pages = math.ceil(len(qs) / num_elements_per_page)
 
     def page(self, num_page):
-
-        if num_page is int and 0 < num_page < self.num_pages + 1:
-            start = self.num_elements_on_page * (num_page - 1)
-            end = self.num_elements_on_page * num_page
-        else:
-            start = 0
-            end = self.num_elements_on_page
+        try:
+            num_page = int(num_page)
+        except TypeError:
             num_page = 1
+        else:
+            if num_page > self.num_pages or num_page < 1:
+                num_page = 1
 
-        p = self.Page(self.qs[start:end], num_page)
-        if start == 0:
-            p.has_previous = False
-        if end == self.num_elements_on_page * num_page:
-            p.has_next = False
+        first_elem_ind = self.num_elements_per_page * (num_page - 1)
+        last_elem_ind = self.num_elements_per_page * num_page
+
+        p = self.Page(self.qs[first_elem_ind:last_elem_ind], num_page, self.num_pages)
 
         return p
 
     class Page:
-        has_previous = True
-        has_next = True
-
-        def __init__(self, qs, next_page_number):
+        def __init__(self, qs, num_page, num_pages):
             self.qs = qs
             self.it = 0
-            self.next_page_number = next_page_number
-            print(self.next_page_number)
+
+            self.num_page = num_page
+            self.previous_page_number = num_page - 1
+            self.next_page_number = num_page + 1
+            self.first_page_number = 1
+            self.last_page_number = max(num_pages, 1)
 
         def __iter__(self):
             return self
@@ -99,18 +99,23 @@ def list_articles_view(request):
     # articles_qs = Article.objects.order_by('-date_send', 'title')[:10]
     # return render(request, 'web_form/articles_list.html', {'articles_qs': articles_qs})
 
-    articles_qs = Article.objects.order_by('-date_send', 'title')
+    cond = request.GET.get('cond')
+    try:
+        regular = re.sub(r'', cond, '')
+    except:
+        regular = r''
+    else:
+        if cond == "None":
+            regular = r''
+
+    articles_qs = Article.objects.filter(title__iregex=regular).order_by('-date_send', 'title')
     paginator = MyPaginator(articles_qs, 10)
     num_page = request.GET.get('page')
     page = paginator.page(num_page)
-    # try:
-    #     page = paginator.page(num_page)
-    # except PageNotAnInteger:
-    #     page = paginator.page(1)
-    # except EmptyPage:
-    #     page = paginator.page(paginator.num_pages)
 
-    return render(request, 'web_form/articles_list.html', {'page': page})
+    form = SearchForm(request.GET or None)
+
+    return render(request, 'web_form/articles_list.html', {'page': page, 'form': form})
 
 
 def article_create(request):
