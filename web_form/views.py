@@ -99,19 +99,17 @@ def list_articles_view(request):
     # articles_qs = Article.objects.order_by('-date_send', 'title')[:10]
     # return render(request, 'web_form/articles_list.html', {'articles_qs': articles_qs})
 
-    cond = request.GET.get('cond')
-    try:
+    articles_qs = Article.objects.all()
+    cond = request.GET.get('cond', None)
+    if cond:
         regular = re.sub(r'', cond, '')
-    except:
-        regular = r''
-    else:
-        if cond == "None":
-            regular = r''
+        articles_qs = articles_qs.filter(title__iregex=regular)
 
-    articles_qs = Article.objects.filter(title__iregex=regular).order_by('-date_send', 'title')
-    paginator = MyPaginator(articles_qs, 10)
+    articles_qs = articles_qs.order_by('-date_send', 'title')
+
+    paginator = MyPaginator(qs=articles_qs, num_elements_per_page=10)
     num_page = request.GET.get('page')
-    page = paginator.page(num_page)
+    page = paginator.page(num_page=num_page)
 
     form = SearchForm(request.GET or None)
 

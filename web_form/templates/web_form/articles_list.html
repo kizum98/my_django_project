@@ -26,32 +26,35 @@
     <hr>
 
     <h5>
-        <a href='?cond={{ form.cond.value }};page={{ page.first_page_number }}'>Начало</a>
-        {% if page.first_page_number != page.num_page %}
+        <a href='?cond={{ form.cond.value }}&page={{ page.first_page_number }}'>Начало</a>
+        {% if page.first_page_number < page.previous_page_number %}
             ...
-            <a href='?cond={{ form.cond.value }};page={{ page.previous_page_number }}'>{{ page.previous_page_number }}</a>
+        {% endif %}
+        {% if page.first_page_number != page.num_page %}
+            <a href='?cond={{ form.cond.value }}&page={{ page.previous_page_number }}'>{{ page.previous_page_number }}</a>
             ,
         {% endif %}
         {{ page.num_page }}
         {% if page.last_page_number != page.num_page %}
             ,
-            <a href='?cond={{ form.cond.value }};page={{ page.next_page_number }}'>{{ page.next_page_number }}</a>
+            <a href='?cond={{ form.cond.value }}&page={{ page.next_page_number }}'>{{ page.next_page_number }}</a>
+        {% endif %}
+        {% if page.last_page_number > page.next_page_number %}
             ...
         {% endif %}
-        <a href='?cond={{ form.cond.value }};page={{ page.last_page_number }}'>Конец</a>
+        <a href='?cond={{ form.cond.value }}&page={{ page.last_page_number }}'>Конец</a>
     </h5>
     <h5>
         Страница {{ page.num_page }} из {{ page.last_page_number }}.
     </h5>
-    <br>
-    <h4>
+    <h5>
         {% if page.first_page_number != page.num_page %}
-            <a href='?cond={{ form.cond.value }};page={{ page.previous_page_number }}'>Предыдущая</a>
+            <a href='?cond={{ form.cond.value }}&page={{ page.previous_page_number }}'>Предыдущая</a>
         {% endif %}
         {% if page.last_page_number != page.num_page %}
-            <a href='?cond={{ form.cond.value }};page={{ page.next_page_number }}'>Следующая</a>
+            <a href='?cond={{ form.cond.value }}&page={{ page.next_page_number }}'>Следующая</a>
         {% endif %}
-    </h4>
+    </h5>
     <hr>
 
 </form>
