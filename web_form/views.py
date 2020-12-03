@@ -95,6 +95,16 @@ def list_articles_view(request):
     # Найти записи, где в вопросе или ответе или имени пользователя есть слово "Привет", без учета регистра
     # articles_qs = Article.objects.filter(Q(user_name__iregex=r'Привет') | Q(text__iregex=r'Привет') |
     #                                      Q(text_answer__iregex=r'Привет')).order_by('-date_send')
+    #
+    # Сколько статей в каждой рубрике
+    # num_category_articles_list = Article.objects.values('category').annotate(Count('user_name'))
+    # for i in range(0, len(num_category_articles_list)):
+    #     print(num_category_articles_list[i]['category'], num_category_articles_list[i]['user_name__count'])
+    #
+    # Cколько статей у пользователя в каждой рубрике
+    # num_category_articles_list = Article.objects.values('user_name', 'category').annotate(Count('category'))
+    # for i in range(0, len(num_category_articles_list)):
+    #      print(num_category_articles_list[i])
 
     # articles_qs = Article.objects.order_by('-date_send', 'title')[:10]
     # return render(request, 'web_form/articles_list.html', {'articles_qs': articles_qs})
@@ -104,7 +114,6 @@ def list_articles_view(request):
     if cond:
         regular = re.sub(r'', cond, '')
         articles_qs = articles_qs.filter(title__iregex=regular)
-
     articles_qs = articles_qs.order_by('-date_send', 'title')
 
     paginator = MyPaginator(qs=articles_qs, num_elements_per_page=10)
