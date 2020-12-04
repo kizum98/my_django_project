@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from datetime import date, timedelta
-from django.db.models import Count, Q
+from django.db.models import Count, Max, Q
 
 import math
 import re
@@ -44,6 +44,7 @@ class MyPaginator:
             self.last_page_number = max(num_pages, 1)
 
         def __iter__(self):
+            self.it = 0
             return self
 
         def __next__(self):
@@ -110,10 +111,15 @@ def list_articles_view(request):
     # return render(request, 'web_form/articles_list.html', {'articles_qs': articles_qs})
 
     articles_qs = Article.objects.all()
-    cond = request.GET.get('cond', None)
-    if cond:
-        regular = re.sub(r'', cond, '')
-        articles_qs = articles_qs.filter(title__iregex=regular)
+
+    filt = request.GET.get('filt', "")
+    if filt:
+        articles_qs = articles_qs.filter(title__icontains=filt)
+
+    category_id = request.GET.get('category', "")
+    if category_id:
+        articles_qs = articles_qs.filter(category_id=category_id)
+
     articles_qs = articles_qs.order_by('-date_send', 'title')
 
     paginator = MyPaginator(qs=articles_qs, num_elements_per_page=10)
@@ -122,7 +128,7 @@ def list_articles_view(request):
 
     form = SearchForm(request.GET or None)
 
-    return render(request, 'web_form/articles_list.html', {'page': page, 'form': form})
+    return render(request, 'web_form/articles_list.html', {'page': page, 'form': form, 'category_id': category_id})
 
 
 def article_create(request):
@@ -144,14 +150,18 @@ def article_view(request, article_id):
     form = AnswerArticleForm(request.POST or None, instance=article)
     reset = False
 
+    last_articles_qs = Article.objects.exclude(id=article_id).order_by('category', '-date_send').distinct('category')
+
     if request.method == "POST":
         if form.is_valid():
             article = form.save()
             article.date_answer = date.today()
-            return render(request, 'web_form/article.html', {'article': article, 'form': form, 'reset': reset})
+            return render(request, 'web_form/article.html', {'article': article, 'form': form, 'reset': reset,
+                                                             'last_articles_qs': last_articles_qs})
         reset = True
 
-    return render(request, 'web_form/article.html', {'article': article, 'form': form, 'reset': reset})
+    return render(request, 'web_form/article.html', {'article': article, 'form': form, 'reset': reset,
+                                                     'last_articles_qs': last_articles_qs})
 
 
 def article_modify(request, article_id):

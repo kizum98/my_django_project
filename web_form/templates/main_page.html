@@ -9,12 +9,15 @@
         function go_to_url(url){window.open(url,"_self");}
         function get_elem_value(id){return document.getElementById(id).value;}
     </script>
+    <script src="static/js/bootstrap.js"></script>
 </head>
 <body class="jumbotron">
 
+<div class="container-fluid">
 {% block content %}
 
 {% endblock %}
+</div>
 
 </body>
 </html>

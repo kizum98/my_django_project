@@ -8,18 +8,17 @@
 
 <form method="post">
     {% csrf_token %}
-
     <h3>{{form.title.label}}</h3>
-    <h5>{{form.title}}</h5>
+    <div class="input-group-text"><h5>{{form.title}}</h5></div>
     <h3>{{form.user_name.label}}</h3>
-    <h5>{{form.user_name}}</h5>
+    <div class="input-group-text"><h5>{{form.user_name}}</h5></div>
     <h3>{{form.text.label}}</h3>
-    {{form.text}}
+    <div class="input-group-text">{{form.text}}</div>
     <hr>
     {{form.captcha}}
     <br>
 
-    <input type="submit" value="Сохранить сообщение">
+    <input class="btn btn-primary"  type="submit" value="Сохранить сообщение">
     {% if reset %}
         <br>
         <b>Ошибка ввода капчи, вы робот!</b>
@@ -29,7 +28,8 @@
 <hr>
 
 <form action = "">
-    <input type="button" value="На главную" onclick = "go_to_url('{% url 'articles:list_articles_view' %}')">
+    <input class="btn btn-outline-primary""  type="button" value="На главную" onclick = "go_to_url('{% url 'articles:list_articles_view' %}')">
 </form>
+<hr>
 
 {% endblock %}

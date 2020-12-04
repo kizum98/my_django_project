@@ -18,18 +18,18 @@
     {% csrf_token %}
     <h5>Отметить статью</h5>
     {{form.is_show}}
+    <hr>
     <h5>Добавить ответ</h5>
-    {{form.text_answer}}
+    <div class="input-group-text">{{form.text_answer}}</div>
     <br>
     {% if article.date_answer %}
         <br>
         <h5>Дата ответа
         {{article.date_answer}}</h5>
     {% endif %}
-    <hr>
-    {{form.captcha}}
+    <div class="input-group-text">{{form.captcha}}</div>
     <br>
-    <input type="submit" value="Добавить">
+    <input class="btn btn-primary"  type="submit" value="Добавить">
     {% if reset %}
         <br>
         <b>Ошибка ввода капчи, вы робот!</b>
@@ -38,9 +38,19 @@
 </form>
 
 <form action = "">
-    <input type="button" value="На главную" onclick = "go_to_url('{% url 'articles:list_articles_view' %}')">
-    <input type="button" value="Редактировать" onclick = "go_to_url('{% url 'articles:article_modify' article.id %}')">
+    <input class="btn btn-outline-primary"  type="button" value="На главную" onclick = "go_to_url('{% url 'articles:list_articles_view' %}')">
+    <input class="btn btn-outline-primary"  type="button" value="Редактировать" onclick = "go_to_url('{% url 'articles:article_modify' article.id %}')">
 </form>
 
+<hr>
+<h4>Читайте также</h4>
+<br>
+{% for i in last_articles_qs %}
+    <i>Дата последней правки : {{i.date_send}}</i>
+    <br>
+    <a href='?filt=&category={{ i.category_id }}'> <i>Категория : {{i.category}}</i> </a>
+    <a href="{% url 'articles:article_view' i.id%}"><h2>{{i.title}}</h2> </a>
+{% endfor %}
+<hr>
 
 {% endblock %}

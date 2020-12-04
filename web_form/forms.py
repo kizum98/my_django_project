@@ -22,4 +22,5 @@ class AnswerArticleForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
 
-    cond = forms.CharField(max_length=100, initial="", required=False)
+    filt = forms.CharField(max_length=100, initial="", required=False)
+    category = forms.CharField(max_length=100, initial="", required=False)

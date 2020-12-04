@@ -11,60 +11,63 @@
 
 <br>
 <form action = "" >
-    <input type="button" value="Добавить статью" onclick = "go_to_url('{% url 'articles:article_create' %}')">
+    <input class="btn btn-primary" type="button" value="Добавить статью" onclick = "go_to_url('{% url 'articles:article_create' %}')">
 </form>
 <hr>
+
 <h5>
     Поиск статей
 </h5>
-
 <form method="get" action=".">
-
-    {{ form.cond }}
+    {{ form.filt }}
     <br>
-    <input type="submit" value="Найти">
+    <input class="btn btn-outline-primary""  type="submit" value="Найти">
     <hr>
 
     <h5>
-        <a href='?cond={{ form.cond.value }}&page={{ page.first_page_number }}'>Начало</a>
+        <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.first_page_number }}'>Начало</a>
         {% if page.first_page_number < page.previous_page_number %}
             ...
         {% endif %}
         {% if page.first_page_number != page.num_page %}
-            <a href='?cond={{ form.cond.value }}&page={{ page.previous_page_number }}'>{{ page.previous_page_number }}</a>
+            <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.previous_page_number }}'>{{ page.previous_page_number }}</a>
             ,
         {% endif %}
-        {{ page.num_page }}
+        <div class="badge badge-light">{{ page.num_page }}</div>
         {% if page.last_page_number != page.num_page %}
             ,
-            <a href='?cond={{ form.cond.value }}&page={{ page.next_page_number }}'>{{ page.next_page_number }}</a>
+            <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.next_page_number }}'>{{ page.next_page_number }}</a>
         {% endif %}
         {% if page.last_page_number > page.next_page_number %}
             ...
         {% endif %}
-        <a href='?cond={{ form.cond.value }}&page={{ page.last_page_number }}'>Конец</a>
+        <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.last_page_number }}'>Конец</a>
+    </h5>
+    <h5>
+        {% if page.first_page_number != page.num_page %}
+            <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.previous_page_number }}'>Предыдущая</a>
+        {% endif %}
+        {% if page.last_page_number != page.num_page %}
+            <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.next_page_number }}'>Следующая</a>
+        {% endif %}
     </h5>
     <h5>
         Страница {{ page.num_page }} из {{ page.last_page_number }}.
     </h5>
-    <h5>
-        {% if page.first_page_number != page.num_page %}
-            <a href='?cond={{ form.cond.value }}&page={{ page.previous_page_number }}'>Предыдущая</a>
-        {% endif %}
-        {% if page.last_page_number != page.num_page %}
-            <a href='?cond={{ form.cond.value }}&page={{ page.next_page_number }}'>Следующая</a>
-        {% endif %}
-    </h5>
     <hr>
-
 </form>
 
+<div class="list-group">
 {% for article in page %}
+    <li class="list-group-item list-group-item-action">
     <h4>Автор : {{article.user_name}} </h4>
     <i>Дата последней правки : {{article.date_send}}</i>
+    <br>
+    <a href='?filt={{ form.filt.value }}&category={{ article.category_id }}'><i>Категория : {{article.category}}</i></a>
     <a href="{% url 'articles:article_view' article.id%}"><h2>{{article.title}}</h2> </a>
-    <hr>
+    </li>
 {% endfor %}
+</div>
 
 
 {% endblock %}
