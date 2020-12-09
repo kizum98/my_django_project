@@ -3,7 +3,6 @@ from captcha.fields import CaptchaField
 
 from .models import Article
 
-
 class CreateArticleForm(forms.ModelForm):
     captcha = CaptchaField(label='Докажи что не робо ')
 
@@ -13,12 +12,12 @@ class CreateArticleForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CreateArticleForm, self).__init__(*args, **kwargs)
-        # self.fields['title'].widget.attrs.update({'class': 'form-control col-6 col-10-sm',
-        #                                           'placeholder': 'Название статьи'})
-        # self.fields['user_name'].widget.attrs.update({'class': 'form-control col-6',
-        #                                               'placeholder': 'Имя пользователя'})
-        # self.fields['text'].widget.attrs.update({'class': 'form-control col-6',
-        #                                          'placeholder': 'Текст'})
+        self.fields['title'].widget.attrs.update({'class': 'form-control',
+                                                   'placeholder': 'Название статьи'})
+        self.fields['user_name'].widget.attrs.update({'class': 'form-control',
+                                                      'placeholder': 'Имя пользователя'})
+        self.fields['text'].widget.attrs.update({'class': 'form-control',
+                                                'placeholder': 'Текст'})
 
 
 class AnswerArticleForm(forms.ModelForm):
@@ -30,7 +29,8 @@ class AnswerArticleForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AnswerArticleForm, self).__init__(*args, **kwargs)
-        self.fields['is_show'].widget.attrs.update({'class': 'form-check-input', 'type': 'checkbox'})
+        self.fields['text_answer'].widget.attrs.update({'class': 'form-control',
+                                                 'placeholder': 'Текст'})
 
 
 class SearchForm(forms.Form):

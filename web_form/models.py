@@ -19,6 +19,7 @@ class Article(models.Model):
     user_name = models.CharField(max_length=30, verbose_name='Имя пользователя')
     text = models.TextField(verbose_name='Текст')
     date_send = models.DateField(auto_now=True)
+    # file (сохраняется в /media/web_form/article/year/month/day/.jpg)
 
     date_answer = models.DateField(blank=True, null=True)
     text_answer = models.TextField(verbose_name='Текст ответа')

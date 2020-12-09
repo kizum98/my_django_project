@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+
 <header>
     <nav class="navbar navbar-expand-xl navbar-dark fixed-top bg-dark md-2">
         <a class="navbar-brand" href="?filt=&category=&page=">
@@ -22,9 +23,9 @@
                 {% for category in categorys_qs %}
                 <li class="nav-item">
                 {% if category_id != category.id %}
-                     <a class="nav-link" href="?filt=&category={{category.id}}&page="> {{category}}</a>
+                     <a class="nav-link" href="?filt=&category={{category.id}}&page="> {{category}} <span class="sr-only">(current)</span></a>
                 {% else %}
-                     <a class="nav-link active" href="?filt=&category={{category.id}}&page="> {{category}}</a>
+                     <a class="nav-link active" href="?filt=&category={{category.id}}&page="> {{category}} <span class="sr-only">(current)</span></a>
                 {% endif %}
                 </li>
                 {% endfor %}
@@ -139,4 +140,5 @@
         </div>
     </div>
 </main>
+
 {% endblock %}

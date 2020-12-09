@@ -6,30 +6,64 @@
 
 {% block content %}
 
-<form method="post">
-    {% csrf_token %}
-    <h3>{{form.title.label}}</h3>
-    <div class="input-group-text"><h5>{{form.title}}</h5></div>
-    <h3>{{form.user_name.label}}</h3>
-    <div class="input-group-text"><h5>{{form.user_name}}</h5></div>
-    <h3>{{form.text.label}}</h3>
-    <div class="input-group-text">{{form.text}}</div>
-    <hr>
-    {{form.captcha}}
+<header>
+    <nav class="navbar navbar-expand-xl navbar-dark fixed-top bg-dark col-xl-1 ">
+        <a class="navbar-brand" href="?">
+            Навигация по статье
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarCollapse"
+                aria-expanded="false">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto sidenav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link" href="#start">В начало <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="#save">Сохранить <span class="sr-only">(current)</span></a>
+                </li>
+                <hr>
+                <li class="nav-item">
+                    <a class="nav-link text-primary" href="{% url 'articles:list_articles_view' %}">На главную <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+
+<main class="content-wrapper">
+<div class="card border-dark text-center mb-2">
+
+    <div class="card-header border-light md-2" id="start">
+        <h2>Создание статьи</h2>
+    </div>
+
+    <form method="post" action=".#save">
+        {% csrf_token %}
+        <div class="card-body md-2">
+            <h3>{{form.title.label}}</h3>
+            <h5>{{form.title}}</h5>
+            <h3>{{form.user_name.label}}</h3>
+            <h5>{{form.user_name}}</h5>
+            <h3>{{form.text.label}}</h3>
+            {{form.text}}
+        </div>
+
+        <div class="card-body md-2 " id="save">
+            <div class="g-recaptcha">{{form.captcha}}</div>
+            {% if reset %}
+            <b>Ошибка ввода капчи, вы робот!</b>
+            <br>
+            {% endif %}
+            <input  class="btn btn-outline-primary" type="submit" value="Сохранить сообщение">
+        </div>
+    </form>
     <br>
-
-    <input class="btn btn-primary"  type="submit" value="Сохранить сообщение">
-    {% if reset %}
-        <br>
-        <b>Ошибка ввода капчи, вы робот!</b>
-    {% endif %}
-
-</form>
-<hr>
-
-<form action = "">
-    <input class="btn btn-outline-primary""  type="button" value="На главную" onclick = "go_to_url('{% url 'articles:list_articles_view' %}')">
-</form>
-<hr>
-
+</div>
+</main>
 {% endblock %}
