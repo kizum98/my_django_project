@@ -7,7 +7,7 @@ import math
 import re
 
 from .forms import AnswerArticleForm, CreateArticleForm, SearchForm
-from .models import Article
+from .models import Article, Category
 
 
 class MyPaginator:
@@ -19,7 +19,7 @@ class MyPaginator:
     def page(self, num_page):
         try:
             num_page = int(num_page)
-        except TypeError:
+        except (TypeError, ValueError) as error:
             num_page = 1
         else:
             if num_page > self.num_pages or num_page < 1:
@@ -118,6 +118,7 @@ def list_articles_view(request):
 
     category_id = request.GET.get('category', "")
     if category_id:
+        category_id = int(category_id)
         articles_qs = articles_qs.filter(category_id=category_id)
 
     articles_qs = articles_qs.order_by('-date_send', 'title')
@@ -128,7 +129,10 @@ def list_articles_view(request):
 
     form = SearchForm(request.GET or None)
 
-    return render(request, 'web_form/articles_list.html', {'page': page, 'form': form, 'category_id': category_id})
+    categorys_qs = Category.objects.all()
+
+    return render(request, 'web_form/articles_list.html',
+                  {'page': page, 'form': form, 'category_id': category_id, 'categorys_qs': categorys_qs})
 
 
 def article_create(request):

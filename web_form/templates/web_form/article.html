@@ -6,19 +6,37 @@
 
 {% block content %}
 
-<h3>{{article.title}}</h3>
-<hr>
-<h5>{{article.user_name}}</h5>
-<h5>{{article.date_send}}</h5>
-<br>
-{{article.text}}
-<hr>
+<div class="card mb-3">
+    <div class="card-header text-center md-3 ">
+        <h2 class="card-title">{{article.title}}</h2>
+    </div>
+    <div class="card-body">
+        <h5 class="card-text">{{article.user_name}} </h5>
+        <h5 class="card-text"><i>{{article.date_send}}</i></h5>
+        <hr>
+    </div>
+</div>
 
-<form method="post" action="{% url 'articles:article_view' article.id %}">
-    {% csrf_token %}
-    <h5>Отметить статью</h5>
-    {{form.is_show}}
-    <hr>
+<div class="card mb-3">
+    <div class="card-body">
+        <p class="card-text">{{article.text}}</p>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <form method="post" action="{% url 'articles:article_view' article.id %}">
+        {% csrf_token %}
+        <div class="card-bod md-3">
+            <div class="form-group">
+            <div class="form-check">
+                {{form.is_show}}
+                <label class="form-check-label" for="flexCheckDefault">
+                    Default checkbox
+                </label>
+            </div>
+                </div>
+        </div>
+
     <h5>Добавить ответ</h5>
     <div class="input-group-text">{{form.text_answer}}</div>
     <br>
@@ -37,6 +55,9 @@
     <hr>
 </form>
 
+</div>
+
+
 <form action = "">
     <input class="btn btn-outline-primary"  type="button" value="На главную" onclick = "go_to_url('{% url 'articles:list_articles_view' %}')">
     <input class="btn btn-outline-primary"  type="button" value="Редактировать" onclick = "go_to_url('{% url 'articles:article_modify' article.id %}')">
@@ -45,12 +66,23 @@
 <hr>
 <h4>Читайте также</h4>
 <br>
-{% for i in last_articles_qs %}
-    <i>Дата последней правки : {{i.date_send}}</i>
-    <br>
-    <a href='?filt=&category={{ i.category_id }}'> <i>Категория : {{i.category}}</i> </a>
-    <a href="{% url 'articles:article_view' i.id%}"><h2>{{i.title}}</h2> </a>
-{% endfor %}
-<hr>
-
+<div class="container">
+    <div class="row">
+        {% for i in last_articles_qs %}
+        <div class="col-xl-2 col-lg-4 col-md-6 col-12 d-flex mb-4" >
+            <div class="card text-center flex-fill">
+                <div class="card-header ">
+                    <a class="card-title" href='?filt=&category={{ i.category_id }}'> <i>{{i.category}}</i> </a>
+                </div>
+                <div class="card-body">
+                    <a class="card-text" href="{% url 'articles:article_view' i.id%}">{{i.title}}</a>
+                </div>
+                <div class="card-footer">
+                    <i class="text-muted">{{article.date_send}}</i>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

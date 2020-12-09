@@ -5,69 +5,138 @@
 {% endblock %}
 
 {% block content %}
+<header>
+    <nav class="navbar navbar-expand-xl navbar-dark fixed-top bg-dark md-2">
+        <a class="navbar-brand" href="?filt=&category=&page=">
+            Все статьи
+        </a>
 
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-expanded="false">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-<h2>Список статей</h2>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto nav-pills">
+                {% for category in categorys_qs %}
+                <li class="nav-item">
+                {% if category_id != category.id %}
+                     <a class="nav-link" href="?filt=&category={{category.id}}&page="> {{category}}</a>
+                {% else %}
+                     <a class="nav-link active" href="?filt=&category={{category.id}}&page="> {{category}}</a>
+                {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            <form class="form-inline " action="." method="get">
+                {{form.filt}}
+                <input class="btn btn-outline-primary my-2 my-sm-0 " type="submit" value="Найти">
+            </form>
+        </div>
+    </nav>
+</header>
 
-<br>
-<form action = "" >
-    <input class="btn btn-primary" type="button" value="Добавить статью" onclick = "go_to_url('{% url 'articles:article_create' %}')">
-</form>
-<hr>
+<main>
+    <div class="card border-light mb-1">
+        <div class="card-header text-center md-1 ">
+            <h2>Список статей</h2>
+        </div>
 
-<h5>
-    Поиск статей
-</h5>
-<form method="get" action=".">
-    {{ form.filt }}
-    <br>
-    <input class="btn btn-outline-primary""  type="submit" value="Найти">
-    <hr>
+        <div class="card-body text-center">
+            <div class="btn-group btn-group-lg row" role="group">
+                {% if page.first_page_number != page.num_page %}
+                <input class="btn btn-outline-primary col-sm-auto" type="button" value="Начало"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.first_page_number }}')">
+                <input class="btn btn-outline-primary " type="button" value="<"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.previous_page_number }}')">
+                {% else %}
+                <input class="btn btn-outline-primary col-sm-auto" type="button" value="Начало" disabled
+                       onclick = "">
+                <input class="btn btn-outline-primary "  type="button" value="<" disabled
+                       onclick = "">
+                {% endif %}
+                {% if page.first_page_number != page.num_page %}
+                <input class="btn btn-outline-primary" type="button" value="{{ page.previous_page_number }}"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.previous_page_number }}')">
+                {% endif %}
+                <input class="btn btn-outline-primary active" type="button" value="{{ page.num_page }}"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.num_page }}')">
+                {% if page.last_page_number != page.num_page %}
+                <input class="btn btn-outline-primary" type="button" value="{{ page.next_page_number }}"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.next_page_number }}')">
+                {% endif %}
+                {% if page.last_page_number != page.num_page %}
+                <input class="btn btn-outline-primary" type="button" value=">"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.next_page_number }}')">
+                <input class="btn btn-outline-primary col-sm-auto" type="button" value="Конец"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.last_page_number }}')">
+                {% else %}
+                <input class="btn btn-outline-primary" type="button" value=">" disabled
+                       onclick = "">
+                <input class="btn btn-outline-primary col-sm-auto" type="button" value="Конец" disabled
+                       onclick = "">
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
-    <h5>
-        <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.first_page_number }}'>Начало</a>
-        {% if page.first_page_number < page.previous_page_number %}
-            ...
-        {% endif %}
-        {% if page.first_page_number != page.num_page %}
-            <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.previous_page_number }}'>{{ page.previous_page_number }}</a>
-            ,
-        {% endif %}
-        <div class="badge badge-light">{{ page.num_page }}</div>
-        {% if page.last_page_number != page.num_page %}
-            ,
-            <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.next_page_number }}'>{{ page.next_page_number }}</a>
-        {% endif %}
-        {% if page.last_page_number > page.next_page_number %}
-            ...
-        {% endif %}
-        <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.last_page_number }}'>Конец</a>
-    </h5>
-    <h5>
-        {% if page.first_page_number != page.num_page %}
-            <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.previous_page_number }}'>Предыдущая</a>
-        {% endif %}
-        {% if page.last_page_number != page.num_page %}
-            <a class="badge badge-primary" href='?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.next_page_number }}'>Следующая</a>
-        {% endif %}
-    </h5>
-    <h5>
-        Страница {{ page.num_page }} из {{ page.last_page_number }}.
-    </h5>
-    <hr>
-</form>
+    <div class="card border-light mb-1 ">
+        <div class="card-body mb-3">
+            <ul class="list-group list-group-flush">
+                {% for article in page %}
+                <li class="list-group-item">
+                    <i>Дата последней правки : {{article.date_send}}</i>
+                    <br>
+                    <a href='?filt={{ form.filt.value }}&category={{ article.category_id }}'><i>Категория : {{article.category}}</i></a>
+                    <a href="{% url 'articles:article_view' article.id%}"><h2 class="card-title" style="font-size:4vmin;">{{article.title}}</h2> </a>
+                </li>
+                {% endfor %}
+                <li class="list-group-item">
+                     <input class="btn btn-outline-primary "  type="button"
+                            value="Добавить статью" onclick = "go_to_url('{% url 'articles:article_create' %}')">
+                </li>
+            </ul>
+        </div>
+    </div>
 
-<div class="list-group">
-{% for article in page %}
-    <li class="list-group-item list-group-item-action">
-    <h4>Автор : {{article.user_name}} </h4>
-    <i>Дата последней правки : {{article.date_send}}</i>
-    <br>
-    <a href='?filt={{ form.filt.value }}&category={{ article.category_id }}'><i>Категория : {{article.category}}</i></a>
-    <a href="{% url 'articles:article_view' article.id%}"><h2>{{article.title}}</h2> </a>
-    </li>
-{% endfor %}
-</div>
-
-
+    <div class="card border-light mb-1 ">
+        <div class="card-body text-center">
+            <div class="btn-group btn-group-lg row" role="group" >
+                {% if page.first_page_number != page.num_page %}
+                <input class="btn btn-outline-primary col-sm-auto" type="button" value="Начало"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.first_page_number }}')">
+                <input class="btn btn-outline-primary " type="button" value="<"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.previous_page_number }}')">
+                {% else %}
+                <input class="btn btn-outline-primary col-sm-auto" type="button" value="Начало" disabled
+                       onclick = "">
+                <input class="btn btn-outline-primary "  type="button" value="<" disabled
+                       onclick = "">
+                {% endif %}
+                {% if page.first_page_number != page.num_page %}
+                <input class="btn btn-outline-primary" type="button" value="{{ page.previous_page_number }}"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.previous_page_number }}')">
+                {% endif %}
+                <input class="btn btn-outline-primary active" type="button" value="{{ page.num_page }}"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.num_page }}')">
+                {% if page.last_page_number != page.num_page %}
+                <input class="btn btn-outline-primary" type="button" value="{{ page.next_page_number }}"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.next_page_number }}')">
+                {% endif %}
+                {% if page.last_page_number != page.num_page %}
+                <input class="btn btn-outline-primary" type="button" value=">"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.next_page_number }}')">
+                <input class="btn btn-outline-primary col-sm-auto" type="button" value="Конец"
+                       onclick = "go_to_url('?filt={{ form.filt.value }}&category={{category_id}}&page={{ page.last_page_number }}')">
+                {% else %}
+                <input class="btn btn-outline-primary" type="button" value=">" disabled
+                       onclick = "">
+                <input class="btn btn-outline-primary col-sm-auto" type="button" value="Конец" disabled
+                       onclick = "">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}
