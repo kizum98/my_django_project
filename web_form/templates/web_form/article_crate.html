@@ -37,33 +37,35 @@
 
 
 <main class="content-wrapper">
-<div class="card border-dark text-center mb-2">
+    <div class="card border-dark text-center mb-2">
+        <div class="card-header border-light md-2" id="start">
+            <h2>Создание статьи</h2>
+        </div>
 
-    <div class="card-header border-light md-2" id="start">
-        <h2>Создание статьи</h2>
+        <form method="post" action=".#save" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card-body md-2">
+                <h3>{{form.title.label}}</h3>
+                <h5>{{form.title}}</h5>
+                <h3>{{form.user_name.label}}</h3>
+                <h5>{{form.user_name}}</h5>
+                <h3>{{form.text.label}}</h3>
+                {{form.text}}
+                <br>
+
+                {{form.file}}
+
+            </div>
+
+            <div class="card-body md-2 " id="save">
+                <div class="g-recaptcha">{{form.captcha}}</div>
+                {% if reset %}
+                <b>Ошибка ввода капчи, вы робот!</b>
+                <br>
+                {% endif %}
+                <input  class="btn btn-outline-primary" type="submit" value="Сохранить сообщение">
+            </div>
+        </form>
     </div>
-
-    <form method="post" action=".#save">
-        {% csrf_token %}
-        <div class="card-body md-2">
-            <h3>{{form.title.label}}</h3>
-            <h5>{{form.title}}</h5>
-            <h3>{{form.user_name.label}}</h3>
-            <h5>{{form.user_name}}</h5>
-            <h3>{{form.text.label}}</h3>
-            {{form.text}}
-        </div>
-
-        <div class="card-body md-2 " id="save">
-            <div class="g-recaptcha">{{form.captcha}}</div>
-            {% if reset %}
-            <b>Ошибка ввода капчи, вы робот!</b>
-            <br>
-            {% endif %}
-            <input  class="btn btn-outline-primary" type="submit" value="Сохранить сообщение">
-        </div>
-    </form>
-    <br>
-</div>
 </main>
 {% endblock %}

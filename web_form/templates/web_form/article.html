@@ -20,7 +20,7 @@
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto sidenav nav-pills">
-                <li class="nav-item">
+                <li class="nav-item ">
                     <a class="nav-link" href="#title">Заголовок <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
@@ -58,6 +58,11 @@
     </div>
 
     <div class="card mb-3" id="text">
+        {% if article.file %}
+        <div class="card-img-top text-center">
+            <img src="{{article.file.url}}" class="img-fluid" alt="Responsive image"/>
+        </div>
+        {% endif %}
         <div class="card-body">
             <p class="card-text">{{article.text}}</p>
         </div>
@@ -93,7 +98,7 @@
         <div class="card-bodymd-3" >
         <div class="row mr-2 ml-2" >
             {% for i in last_articles_qs %}
-            <div class="col-xl-2 col-lg-4 col-md-6 col-12 d-flex mb-4" >
+            <div class="col-xl-2 col-lg-4 col-md-6 col-12 d-flex mb-2" >
                 <div class="card text-center flex-fill border-primary">
                     <div class="card-header ">
                         <i>{{i.category}}</i>
@@ -101,8 +106,13 @@
                     <div class="card-body">
                         <a class="card-text" href="{% url 'articles:article_view' i.id%}">{{i.title}}</a>
                     </div>
+                    {% if i.file %}
+                    <div class="card-img-bottom">
+                        <img src="{{i.file.url}}" class="img-fluid" alt="Responsive image"/>
+                    </div>
+                    {% endif %}
                     <div class="card-footer">
-                        <i class="text-muted">{{article.date_send}}</i>
+                        <i class="text-muted">{{i.date_send}}</i>
                     </div>
                 </div>
             </div>

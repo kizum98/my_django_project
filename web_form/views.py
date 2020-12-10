@@ -136,13 +136,13 @@ def list_articles_view(request):
 
 
 def article_create(request):
-    form = CreateArticleForm(request.POST or None)
+    form = CreateArticleForm(request.POST or None, request.FILES or None)
     reset = False
 
     if request.method == "POST":
         if form.is_valid():
             article = form.save()
-            form = AnswerArticleForm(request.POST or None, instance=article)
+            form = AnswerArticleForm(request.POST or None, request.FILES or None, instance=article)
             return render(request, 'web_form/article.html', {'article': article, 'form': form})
         reset = True
 
@@ -170,13 +170,13 @@ def article_view(request, article_id):
 
 def article_modify(request, article_id):
     article = get_article(article_id)
-    form = CreateArticleForm(request.POST or None, instance=article)
+    form = CreateArticleForm(request.POST or None, request.FILES or None, instance=article)
     reset = False
 
     if request.method == "POST":
         if form.is_valid():
             article = form.save()
-            form = AnswerArticleForm(request.POST or None, instance=article)
+            form = AnswerArticleForm(request.POST or None, request.FILES or None, instance=article)
             return render(request, 'web_form/article.html', {'article': article, 'form': form, 'reset': reset})
         reset = True
 

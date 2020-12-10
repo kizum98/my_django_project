@@ -8,7 +8,7 @@ class CreateArticleForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = ['title', 'user_name', 'text']
+        fields = ['title', 'user_name', 'text', 'file']
 
     def __init__(self, *args, **kwargs):
         super(CreateArticleForm, self).__init__(*args, **kwargs)
@@ -18,6 +18,8 @@ class CreateArticleForm(forms.ModelForm):
                                                       'placeholder': 'Имя пользователя'})
         self.fields['text'].widget.attrs.update({'class': 'form-control',
                                                 'placeholder': 'Текст'})
+        self.fields['file'].widget.attrs.update({'class': '',
+                                                 'widget': ''})
 
 
 class AnswerArticleForm(forms.ModelForm):
