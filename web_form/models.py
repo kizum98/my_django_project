@@ -37,7 +37,7 @@ class Article(models.Model):
                              verbose_name='Загрузите файл')
 
     date_answer = models.DateField(blank=True, null=True)
-    text_answer = models.TextField(verbose_name='Текст ответа')
+    text_answer = models.TextField(verbose_name='Текст ответа', null=True, blank=True)
     is_show = models.BooleanField(default=False)
 
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)

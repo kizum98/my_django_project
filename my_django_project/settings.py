@@ -125,8 +125,8 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATIC_URL = '/static/'
-CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge'
 
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge'
 CAPTCHA_FONT_SIZE = (25)
 CAPTCHA_BACKGROUND_COLOR = '#EFEFFF'
 CAPTCHA_FOREGROUND_COLOR = '#000000'

@@ -142,8 +142,7 @@ def article_create(request):
     if request.method == "POST":
         if form.is_valid():
             article = form.save()
-            form = AnswerArticleForm(request.POST or None, request.FILES or None, instance=article)
-            return render(request, 'web_form/article.html', {'article': article, 'form': form})
+            return render(request, 'web_form/article_crate.html', {'article': article, 'form': form})
         reset = True
 
     return render(request, 'web_form/article_crate.html', {'form': form, 'reset': reset})
@@ -176,8 +175,7 @@ def article_modify(request, article_id):
     if request.method == "POST":
         if form.is_valid():
             article = form.save()
-            form = AnswerArticleForm(request.POST or None, request.FILES or None, instance=article)
-            return render(request, 'web_form/article.html', {'article': article, 'form': form, 'reset': reset})
+            return render(request, 'web_form/article_crate.html', {'article': article, 'form': form, 'reset': reset})
         reset = True
 
     return render(request, 'web_form/article_crate.html', {'form': form, 'reset': reset})
